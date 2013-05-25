@@ -1,164 +1,164 @@
-http://www34284u.sakura.ne.jp/trac/xlog/wiki/zlog ���R�s�y
+﻿http://www34284u.sakura.ne.jp/trac/xlog/wiki/zlog よりコピペ
 
-zlog �o�C�i���`�� �d�l��
+zlog バイナリ形式 仕様書
 
-    zlog�o�C�i���`���͔񐄏��ł���
-    zlog�o�C�i���`������xlog�ɕϊ����邽�߂̎d�l�� 
+    zlogバイナリ形式は非推奨である
+    zlogバイナリ形式からxlogに変換するための仕様書 
 
-���̌`�����g�p���ׂ��łȂ����R
+この形式を使用すべきでない理由
 
-    zlog�o�C�i���t�@�C���͒P�ɉi�������ꂽ�I�u�W�F�N�g�ł���
-    ���̃\�t�g�E�F�A�Ƃ̉������ӎ������݌v���Ȃ���Ă��Ȃ�
-    �Œ蒷�̃t�H�[�}�b�g�œ��e�̑唼�͕s�v�ȃo�C�g��ł��� 
+    zlogバイナリファイルは単に永続化されたオブジェクトである
+    他のソフトウェアとの可搬性を意識した設計がなされていない
+    固定長のフォーマットで内容の大半は不要なバイト列である 
 
-�R���e�X�g�̃f�[�^
+コンテストのデータ
 
-    �擪256�o�C�g�̓R���e�X�g�̏��
-    9�o�C�g�ڈȍ~�͎����̃R�[���T�C��
-    zlog�͂��̕������N�����ɖ������Ă��� 
+    先頭256バイトはコンテストの情報
+    9バイト目以降は自分のコールサイン
+    zlogはこの部分を起動時に無視している 
 
 QSO
 
-    xlog�́urecord�v�ɑΉ�����
-    1���QSO��256�o�C�g�̌Œ蒷�ŕ\�������
-    ���ꂼ��̃o�C�g���͈̔͂𒴂��������͍폜����� 
+    xlogの「record」に対応する
+    1回のQSOは256バイトの固定長で表現される
+    それぞれのバイト数の範囲を超えた文字は削除される 
 
-    ���t
-    ����ǂ̃R�[���T�C��
-    ���M�i���o�[
-    ��̃i���o�[
-    RST ���|�[�g
-    ���[�h
-    �o���h
-    �o��
-    ����ǂ̃}���`
-    New�}���`
-    �I�y���[�^
-    ���� 
+    日付
+    相手局のコールサイン
+    送信ナンバー
+    受領ナンバー
+    RST レポート
+    モード
+    バンド
+    出力
+    相手局のマルチ
+    Newマルチ
+    オペレータ
+    メモ 
 
-���t
+日付
 
-    8�o�C�g(64bit���������_��)�Ŏ�����\��
-    1�o�C�g�ڂ��ŉ��ʁA8�o�C�g�ڂ��ŏ�ʂȂ̂Œ���
-    T Date Time �^���V���A���C�Y�������̂Ǝv����
-    1899�N12��30������̌o�ߓ����𕂓������_�����ŕ\��
-    �����_�ȉ���������\�� (1/24��1����) 
+    8バイト(64bit浮動小数点数)で時刻を表す
+    1バイト目が最下位、8バイト目が最上位なので注意
+    T Date Time 型をシリアライズしたものと思われる
+    1899年12月30日からの経過日数を浮動小数点小数で表現
+    小数点以下が時刻を表す (1/24で1時間) 
 
-����ǂ̃R�[���T�C��
+相手局のコールサイン
 
-    xlog��callsign�ɑΉ�����
-    1�o�C�g�ڂ̓R�[���T�C���̃o�C�g����\��
-    �����ăR�[���T�C����ASCII�����񂪑���
-    �ȍ~��13�o�C�g�ڂ܂�0x00�Ō����� 
+    xlogのcallsignに対応する
+    1バイト目はコールサインのバイト数を表す
+    続いてコールサインのASCII文字列が続く
+    以降は13バイト目まで0x00で穴埋め 
 
-���M�i���o�[
+送信ナンバー
 
-    xlog��sent�ɑΉ�����
-    1�o�C�g�ڂ͑��M�i���o�[�̃o�C�g����\��
-    �����đ��M�i���o�[��ASCII�����񂪑���
-    �ȍ~��31�o�C�g�ڂ܂�0x00�Ō����� 
+    xlogのsentに対応する
+    1バイト目は送信ナンバーのバイト数を表す
+    続いて送信ナンバーのASCII文字列が続く
+    以降は31バイト目まで0x00で穴埋め 
 
-��̃i���o�[
+受領ナンバー
 
-    xlog��received�ɑΉ�����
-    1�o�C�g�ڂ͎�̃i���o�[�̃o�C�g����\��
-    �����Ď�̃i���o�[��ASCII�����񂪑���
-    �ȍ~��32�o�C�g�ڂ܂�0x00�Ō����� 
+    xlogのreceivedに対応する
+    1バイト目は受領ナンバーのバイト数を表す
+    続いて受領ナンバーのASCII文字列が続く
+    以降は32バイト目まで0x00で穴埋め 
 
-�g�p����Ȃ�����
+使用されない部分
 
-    2�o�C�g�s�v 
+    2バイト不要 
 
-RST ���|�[�g
+RST レポート
 
-    xlog��rst�ɑΉ�
-    �����Ȃ�2�o�C�g��RST��\�� (599�Ȃ�0x57 0x02)
-    1�o�C�g�ڂ����ʂ�2�o�C�g�ڂ���ʂȂ̂Œ��� 
+    xlogのrstに対応
+    符号なし2バイトでRSTを表す (599なら0x57 0x02)
+    1バイト目が下位で2バイト目が上位なので注意 
 
-�g�p����Ȃ�����
+使用されない部分
 
-    4�o�C�g�s�v 
+    4バイト不要 
 
-���[�h
+モード
 
-    xlog��mode�ɑΉ�
-    1�o�C�g�Ń��[�h��\��
-    0x00��CW
-    0x01��SSB
-    0x02��FM
-    0x03��AM
-    0x04��RTTY
-    0x05��Others 
+    xlogのmodeに対応
+    1バイトでモードを表す
+    0x00はCW
+    0x01はSSB
+    0x02はFM
+    0x03はAM
+    0x04はRTTY
+    0x05はOthers 
 
-�o���h
+バンド
 
-    xlog��band�ɑΉ�
-    1�o�C�g�Ńo���h��\��
-    0x00��1.9MHz
-    0x01��3.5MHz
-    0x02��7MHz
-    0x03��10MHz
-    0x04��14MHz
-    0x05��18MHz
-    0x06��21MHz
-    0x07��24MHz
-    0x08��28MHz
-    0x09��50MHz
-    0x0A��144MHz
-    0x0B��430MHz
-    0x0C��1.2GHz
-    0x0D��2.4GHz
-    0x0E��5.6GHz
-    0x0F��10GHz�ȏ� 
+    xlogのbandに対応
+    1バイトでバンドを表す
+    0x00は1.9MHz
+    0x01は3.5MHz
+    0x02は7MHz
+    0x03は10MHz
+    0x04は14MHz
+    0x05は18MHz
+    0x06は21MHz
+    0x07は24MHz
+    0x08は28MHz
+    0x09は50MHz
+    0x0Aは144MHz
+    0x0Bは430MHz
+    0x0Cは1.2GHz
+    0x0Dは2.4GHz
+    0x0Eは5.6GHz
+    0x0Fは10GHz以上 
 
-�o��
+出力
 
-    1�o�C�g�ŏo�͂�\��
-    0x00��P
-    0x01��L
-    0x02��M
-    0x03��H 
+    1バイトで出力を表す
+    0x00はP
+    0x01はL
+    0x02はM
+    0x03はH 
 
-����ǂ̃}���`
+相手局のマルチ
 
-    xlog�ɑΉ�����^�O�͂Ȃ�(�s�v)
-    1�o�C�g�ڂ͑���ǂ̃}���`�̃o�C�g����\��
-    �����đ���ǂ̃}���`��ASCII�����񂪑���
-    �ȍ~��62�o�C�g�ڂ܂�0x00�Ō����� 
+    xlogに対応するタグはない(不要)
+    1バイト目は相手局のマルチのバイト数を表す
+    続いて相手局のマルチのASCII文字列が続く
+    以降は62バイト目まで0x00で穴埋め 
 
-New�}���`
+Newマルチ
 
-    xlog�ɑΉ�����^�O�͂Ȃ�(�s�v)
-    1�o�C�g��New�}���`���ǂ����\��
-    0x00�Ȃ�����}���`
-    0x01�Ȃ�V�K�}���`
-    ���̓s�xzlog�����肷��̂ŕs�v 
+    xlogに対応するタグはない(不要)
+    1バイトでNewマルチかどうか表す
+    0x00なら既得マルチ
+    0x01なら新規マルチ
+    その都度zlogが判定するので不要 
 
-�g�p����Ȃ�����
+使用されない部分
 
-    1�o�C�g�s�v 
+    1バイト不要 
 
-���_
+得点
 
-    xlog�ɑΉ�����^�O�͂Ȃ�(�s�v)
-    1�o�C�g�œ��_��\��
-    ���̓s�xzlog���v�Z����̂ŕs�v 
+    xlogに対応するタグはない(不要)
+    1バイトで得点を表す
+    その都度zlogが計算するので不要 
 
-�I�y���[�^
+オペレータ
 
-    xlog��operator�ɑΉ�
-    1�o�C�g�ڂ͉^�p�Җ��̃o�C�g����\��
-    �����ĉ^�p�Җ���SJIS�����񂪑���
-    �ȍ~��15�o�C�g�ڂ܂�0x00�Ō����� 
+    xlogのoperatorに対応
+    1バイト目は運用者名のバイト数を表す
+    続いて運用者名のSJIS文字列が続く
+    以降は15バイト目まで0x00で穴埋め 
 
-����
+メモ
 
-    xlog��notes�ɑΉ�
-    1�o�C�g�ڂ̓R�����g�̃o�C�g����\��
-    �����ă�����SJIS�����񂪑���
-    �ȍ~��67�o�C�g�ڂ܂�0x00�Ō����� 
+    xlogのnotesに対応
+    1バイト目はコメントのバイト数を表す
+    続いてメモのSJIS文字列が続く
+    以降は67バイト目まで0x00で穴埋め 
 
-�g�p����Ȃ�����
+使用されない部分
 
-    14�o�C�g�s�v 
+    14バイト不要 
 
